@@ -7,14 +7,12 @@ export const store = new Vuex.Store({
     state: {
         isAuth: localStorage.getItem('jwt'),
         user: JSON.parse(localStorage.getItem('user')),
+        isManager: localStorage.getItem('role') === 'ROLE_MANAGER'
     },
     getters: {
-        isAuth: state => {
-            return state.isAuth;
-        },
-        user: state => {
-            return state.user;
-        }
+        isAuth: state => state.isAuth,
+
+        user: state => state.user
     },
     actions: {
         login({commit}) {

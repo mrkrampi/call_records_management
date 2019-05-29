@@ -22,12 +22,12 @@
             >
                 <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
                 <template v-slot:items="props">
-                    <td>{{ props.item.firstName + ' ' + props.item.lastName }}</td>
-                    <td>{{ props.item.address }}</td>
-                    <td>{{ props.item.phoneNumber }}</td>
-                    <td>{{ props.item.salary }}</td>
-                    <td>{{ props.item.birthday }}</td>
-                    <td>{{ props.item.email }}</td>
+                       <td @click="showPort(props.item.id)">{{ props.item.firstName + ' ' + props.item.lastName }}</td>
+                       <td @click="showPort(props.item.id)">{{ props.item.address }}</td>
+                       <td @click="showPort(props.item.id)">{{ props.item.phoneNumber }}</td>
+                       <td @click="showPort(props.item.id)">{{ props.item.salary }}</td>
+                       <td @click="showPort(props.item.id)">{{ props.item.birthday }}</td>
+                       <td @click="showPort(props.item.id)">{{ props.item.email }}</td>
                     <td class="justify-center layout px-0">
                         <v-icon
                                 small
@@ -87,6 +87,9 @@
             },
             editItem(item) {
                 this.$root.$emit("item-edit-dialog", item);
+            },
+            showPort(id) {
+                this.$router.push(`/portfolio/${id}`)
             }
         },
         mounted() {

@@ -67,7 +67,11 @@
 
                     this.$router.push("/profile");
                 })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                        if (error.message === 'Request failed with status code 401') {
+                            this.$root.$emit('call-snackbar', 'Неправильне ім\'я користувача або пароль');
+                        }
+                    });
             }
         }
     }

@@ -25,22 +25,32 @@
                     <td>{{ props.item.firstName + ' ' + props.item.lastName }}</td>
                     <td>{{ props.item.address }}</td>
                     <td>{{ props.item.phoneNumber }}</td>
-                    <td>{{ props.item.birthday }}</td>
                     <td>{{ props.item.email }}</td>
                     <td class="justify-center layout px-0">
                         <v-icon
                                 small
                                 class="mr-2"
-                                @click="editItem(props.item)"
+                                @click="callToUser(props.item)"
                         >
-                            edit
+                            phone
                         </v-icon>
-                        <v-icon
-                                small
-                                @click="deleteItem(props.item)"
-                        >
-                            delete
-                        </v-icon>
+                        <template  v-if="isHidden">
+                            <v-icon
+                                    small
+                                    class="mr-2"
+                                    @click="editItem(props.item)"
+                            >
+                                edit
+                            </v-icon>
+                        </template>
+                        <template v-if="isHidden">
+                            <v-icon
+                                    small
+                                    @click="deleteItem(props.item)"
+                            >
+                                delete
+                            </v-icon>
+                        </template>
                     </td>
                 </template>
                 <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
@@ -68,10 +78,18 @@
                     {text: 'ПІБ', value: 'name', sortable: false},
                     {text: 'Адреса', value: 'address', sortable: false},
                     {text: 'Номер телефону', value: 'phoneNumber', sortable: false},
-                    {text: 'Дата народження', value: 'birthday', sortable: false},
                     {text: 'Email', value: 'email', sortable: false},
                     {text: 'Дії', value: 'action', sortable: false}
                 ],
+            }
+        },
+        computed: {
+            isHidden() {
+                if (localStorage.getItem('role') === 'ROLE_MANAGER') {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         },
         methods: {
@@ -85,6 +103,18 @@
             },
             editItem(item) {
                 this.$root.$emit("item-edit-dialog", item);
+            },
+            callToUser(user) {
+                HTTP.get('/api/calls/try-call-to-user', {
+                    params: {
+                        "user_id": user.id
+                    }
+                })
+                    .then(response => {
+                        console.log(response);
+                        this.$root.$emit('show-dialog', response.data.call, response.data.callLog);
+                    })
+                    .catch(error => console.log(error));
             }
         },
         mounted() {
@@ -103,3 +133,9 @@
         }
     }
 </script>
+
+<style scoped>
+    .hidden {
+        display: none;
+    }
+</style>

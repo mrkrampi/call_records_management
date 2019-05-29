@@ -10,9 +10,6 @@ function getTokenFromStorage() {
 }
 
 HTTP.interceptors.request.use(request => {
-        request.headers = {
-            ...request.headers,
-        };
         const fullUrl = request.url;
         if (fullUrl.indexOf('/signin') === -1) {
             const token = getTokenFromStorage();
@@ -22,7 +19,7 @@ HTTP.interceptors.request.use(request => {
                     'Authorization': `Bearer ${token}`
                 };
             } else {
-                return Promise.reject();
+                throw new Error()
             }
         }
         return request;

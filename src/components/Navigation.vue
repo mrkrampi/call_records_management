@@ -76,6 +76,7 @@
                     {title: 'Профіль', path: '/profile'},
                     {title: 'Користувачі', path: '/users'},
                     {title: 'Працівники', path: '/workers'},
+                    {title: 'Мої дзвінки', path: '/my-calls'},
                     {title: 'Дзвінки', path: '/calls'},
                 ],
             }

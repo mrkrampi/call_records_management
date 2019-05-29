@@ -1,6 +1,6 @@
 <template>
     <div>
-        <call-table></call-table>
+        <call-table :current-only="currentOnly"></call-table>
     </div>
 </template>
 
@@ -9,6 +9,9 @@
 
     export default {
         name: "CallsList",
-        components: {CallTable}
+        components: {CallTable},
+        props: {
+            currentOnly: Boolean,
+        }
     }
 </script>

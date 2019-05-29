@@ -1,5 +1,5 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-    <v-dialog v-model="dialog" max-width="700" persistent>
+    <v-dialog v-model="dialog" max-width="700">
         <template v-slot:activator="{ on }">
             <v-btn fab dark color="indigo" v-on="on" fixed right bottom>
                 <v-icon dark>add</v-icon>
@@ -27,45 +27,6 @@
                         <v-flex xs12 md6>
                             <v-text-field v-model="item.email" label="Email"></v-text-field>
                         </v-flex>
-                        <v-flex md6>
-                            <v-text-field v-model="item.salary" label="Зарплата"></v-text-field>
-                        </v-flex>
-                        <v-flex md6>
-                            <v-menu
-                                    min-width="240px"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    v-model="menu"
-                            >
-                                <v-text-field
-                                        :value="item.birthday"
-                                        slot="activator"
-                                        label="Дата народження"
-                                        prepend-icon="date_range"
-                                ></v-text-field>
-                                <v-date-picker
-                                        v-model="item.birthday"
-                                        no-title
-                                        scrollable
-                                >
-                                    <v-spacer></v-spacer>
-                                    <v-btn flat color="primary" @click="menu = false">OK</v-btn>
-                                </v-date-picker>
-                            </v-menu>
-                        </v-flex>
-                        <v-flex md6 v-if="!canEditPass">
-                            <v-select
-                                    :items="positions"
-                                    v-model="item.role"
-                                    item-text=""
-                                    item-value="id"
-                                    return-object
-                                    label="Посада"
-                            ></v-select>
-                        </v-flex>
-                        <v-flex md6 v-if="!canEditPass">
-                            <v-text-field v-model="item.password" label="Пароль" type="password"></v-text-field>
-                        </v-flex>
                     </v-layout>
                 </v-container>
             </v-card-text>
@@ -83,21 +44,17 @@
     import {HTTP} from "@/util/HTTP";
 
     export default {
-        name: "WorkerDialog",
+        name: "UserDialog",
         data() {
             return {
                 dialog: false,
                 item: {},
                 menu: false,
-                positions: ["Працівник", "Менеджер"],
             }
         },
         computed: {
             formTitle() {
                 return this.item.id ? "Редагування" : "Додавання";
-            },
-            canEditPass() {
-                return !!this.item.id;
             }
         },
         watch: {
@@ -111,15 +68,13 @@
             close() {
                 this.dialog = false;
                 setTimeout(() => {
-                    this.item = Object.assign({}, {});
+                    this.item = Object.assign({}, this.defaultCategory);
                 }, 300)
             },
             save() {
-                const url = this.item.id ? `/api/workers/${this.item.id}` :
-                    `/api/auth/sign-up`;
                 HTTP({
                     method: this.item.id ? "PUT" : "POST",
-                    url: url,
+                    url: "api/users/" + (this.item.id || ""),
                     data: this.item,
                     headers: {
                         'Content-Type': 'application/json'
@@ -139,3 +94,7 @@
         }
     }
 </script>
+
+<style scoped>
+
+</style>

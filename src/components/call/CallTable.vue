@@ -50,6 +50,9 @@
 
     export default {
         name: "CallTable",
+        props: {
+            currentOnly: Boolean,
+        },
         data() {
             return {
                 pagination: {
@@ -67,6 +70,26 @@
                     {text: 'Клієнт', value: 'email', sortable: false},
                     {text: 'Дії', value: 'action', sortable: false}
                 ],
+            }
+        },
+        watch: {
+            whos: {
+               async handler(whos) {
+                    try {
+                        const { data } = await HTTP.get(`/api/calls/${whos}`);
+                        this.items = data;
+                    } catch (e) {
+                        console.log(e);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                immediate: true
+            }
+        },
+        computed: {
+            whos() {
+                return this.currentOnly ? "my" : '';
             }
         },
         methods: {
@@ -89,11 +112,6 @@
             }
         },
         mounted() {
-            HTTP.get('/api/calls')
-                .then(response => this.items = response.data)
-                .catch(error => console.log(error))
-                .finally(() => this.loading = false);
-
             this.$root.$on("edit-item", (item) => {
                 let index = this.items.findIndex(x => x.id === item.id);
                 this.items.splice(index, 1, item);
