@@ -73,10 +73,10 @@
             }
         },
         watch: {
-            whos: {
-               async handler(whos) {
+            whose: {
+               async handler(whose) {
                     try {
-                        const { data } = await HTTP.get(`/api/calls/${whos}`);
+                        const { data } = await HTTP.get(`/api/calls/${whose}`);
                         this.items = data;
                     } catch (e) {
                         console.log(e);
@@ -88,18 +88,21 @@
             }
         },
         computed: {
-            whos() {
+            whose() {
                 return this.currentOnly ? "my" : '';
             }
         },
         methods: {
-            deleteItem(item) {
-                HTTP.delete(`api/calls/` + item.id)
-                    .then(() => {
-                        this.$root.$emit("call-snackbar", "Запис видалено");
-                        let index = this.items.findIndex(x => x.id === item.id);
-                        this.items.splice(index, 1);
-                    });
+            async deleteItem(item) {
+                try {
+                    await HTTP.delete(`api/calls/` + item.id);
+
+                    this.$root.$emit("call-snackbar", "Запис видалено");
+                    const index = this.items.findIndex(x => x.id === item.id);
+                    this.items.splice(index, 1);
+                } catch (e) {
+                    console.log(e);
+                }
             },
             showNormalTime(time) {
                 return `${parseInt(time / 60)} хв. ${time % 60} с.`

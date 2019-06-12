@@ -71,19 +71,23 @@
                     this.item = Object.assign({}, this.defaultCategory);
                 }, 300)
             },
-            save() {
-                HTTP({
-                    method: this.item.id ? "PUT" : "POST",
-                    url: "api/users/" + (this.item.id || ""),
-                    data: this.item,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then((item) => {
+            async save() {
+                try {
+                    const {data} = await HTTP({
+                        method: this.item.id ? "PUT" : "POST",
+                        url: "api/users/" + (this.item.id || ""),
+                        data: this.item,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
                     this.close();
                     this.$root.$emit("call-snackbar", this.item.id ? "Запис відредаговано" : "Запис додано");
-                    this.$root.$emit((this.item.id ? "edit" : "add") + "-item", item.data)
-                }).catch(err => console.log(err));
+                    this.$root.$emit((this.item.id ? "edit" : "add") + "-item", data)
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         mounted() {
@@ -94,7 +98,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

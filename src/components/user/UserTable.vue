@@ -85,43 +85,47 @@
         },
         computed: {
             isHidden() {
-                if (localStorage.getItem('role') === 'ROLE_MANAGER') {
-                    return true;
-                } else {
-                    return false;
-                }
+                return localStorage.getItem('role') === 'ROLE_MANAGER';
             }
         },
         methods: {
-            deleteItem(item) {
-                HTTP.delete(`api/users/` + item.id)
-                    .then(() => {
-                        this.$root.$emit("call-snackbar", "Запис видалено");
-                        let index = this.items.findIndex(x => x.id === item.id);
-                        this.items.splice(index, 1);
-                    });
+            async deleteItem(item) {
+                try {
+                    await HTTP.delete(`api/users/` + item.id);
+
+                    this.$root.$emit("call-snackbar", "Запис видалено");
+                    let index = this.items.findIndex(x => x.id === item.id);
+                    this.items.splice(index, 1);
+                } catch (e) {
+                    console.log(e);
+                }
             },
             editItem(item) {
                 this.$root.$emit("item-edit-dialog", item);
             },
-            callToUser(user) {
-                HTTP.get('/api/calls/try-call-to-user', {
-                    params: {
-                        "user_id": user.id
-                    }
-                })
-                    .then(response => {
-                        console.log(response);
-                        this.$root.$emit('show-dialog', response.data.call, response.data.callLog);
-                    })
-                    .catch(error => console.log(error));
+            async callToUser(user) {
+                try {
+                    const {data} = await HTTP.get('/api/calls/try-call-to-user', {
+                        params: {
+                            "user_id": user.id
+                        }
+                    });
+
+                    this.$root.$emit('show-dialog', data.call, data.callLog);
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
-        mounted() {
-            HTTP.get('/api/users')
-                .then(response => this.items = response.data)
-                .catch(error => console.log(error))
-                .finally(() => this.loading = false);
+        async mounted() {
+            try {
+                const {data} = await HTTP.get('/api/users');
+                this.items = data;
+            } catch (e) {
+                console.log(e);
+            } finally {
+                this.loading = false;
+            }
 
             this.$root.$on("edit-item", (item) => {
                 let index = this.items.findIndex(x => x.id === item.id);

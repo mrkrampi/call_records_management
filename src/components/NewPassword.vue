@@ -1,4 +1,4 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<template>
     <div>
         <v-layout>
             <v-dialog v-model="dialog" max-width="600px">
@@ -37,17 +37,18 @@
             }
         },
         methods: {
-            changePass() {
-                HTTP.post('/api/auth/change-password', {
-                    data: this.newPass
-                })
-                    .then(response => {
-                        console.log(response)
-                    })
-                    .finally(() => {
-                        this.newPass = '';
-                        this.dialog = false
+            async changePass() {
+                try {
+                    await HTTP.post('/api/auth/change-password', {
+                        data: this.newPass
                     });
+                    this.$root.$emit("call-snackbar", "Пароль змінено");
+                } catch (e) {
+                    console.log(e);
+                } finally {
+                    this.newPass = '';
+                    this.dialog = false;
+                }
             }
         },
         mounted() {
