@@ -114,21 +114,25 @@
                     this.item = Object.assign({}, {});
                 }, 300)
             },
-            save() {
+            async save() {
                 const url = this.item.id ? `/api/workers/${this.item.id}` :
                     `/api/auth/sign-up`;
-                HTTP({
-                    method: this.item.id ? "PUT" : "POST",
-                    url: url,
-                    data: this.item,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then((item) => {
+
+                try {
+                    const {data} = await HTTP({
+                        method: this.item.id ? "PUT" : "POST",
+                        url: url,
+                        data: this.item,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
                     this.close();
                     this.$root.$emit("call-snackbar", this.item.id ? "Запис відредаговано" : "Запис додано");
-                    this.$root.$emit((this.item.id ? "edit" : "add") + "-item", item.data)
-                }).catch(err => console.log(err));
+                    this.$root.$emit((this.item.id ? "edit" : "add") + "-item", data);
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         mounted() {

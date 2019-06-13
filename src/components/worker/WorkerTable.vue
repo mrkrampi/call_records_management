@@ -77,13 +77,15 @@
             }
         },
         methods: {
-            deleteItem(item) {
-                HTTP.delete(`api/workers/` + item.id)
-                    .then(() => {
-                        this.$root.$emit("call-snackbar", "Запис видалено");
-                        let index = this.items.findIndex(x => x.id === item.id);
-                        this.items.splice(index, 1);
-                    });
+            async deleteItem(item) {
+                try {
+                    await HTTP.delete(`api/workers/` + item.id);
+                    this.$root.$emit("call-snackbar", "Запис видалено");
+                    let index = this.items.findIndex(x => x.id === item.id);
+                    this.items.splice(index, 1);
+                } catch (e) {
+                    console.log(e);
+                }
             },
             editItem(item) {
                 this.$root.$emit("item-edit-dialog", item);
@@ -92,11 +94,15 @@
                 this.$router.push(`/portfolio/${id}`)
             }
         },
-        mounted() {
-            HTTP.get('/api/workers')
-                .then(response => this.items = response.data)
-                .catch(error => console.log(error))
-                .finally(() => this.loading = false);
+        async mounted() {
+            try {
+                const {data} = await HTTP.get('/api/workers');
+                this.items = data;
+            } catch (e) {
+                console.log(e);
+            } finally {
+                this.loading = false;
+            }
 
             this.$root.$on("edit-item", (item) => {
                 let index = this.items.findIndex(x => x.id === item.id);
