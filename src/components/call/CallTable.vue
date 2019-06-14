@@ -89,7 +89,7 @@
         },
         computed: {
             whose() {
-                return this.currentOnly ? "my" : '';
+                return this.currentOnly && "my";
             }
         },
         methods: {

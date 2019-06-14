@@ -102,10 +102,6 @@
             login() {
                 this.$router.push("/login");
             }
-            // check(roles) {
-            //     const appRoles = localStorage.getItem("role");
-            //     return roles.indexOf(appRoles) !== -1;
-            // }
         }
     }
 </script>
