@@ -76,7 +76,7 @@
             whose: {
                async handler(whose) {
                     try {
-                        const { data } = await HTTP.get(`/api/calls/${whose}`);
+                        const { data } = await HTTP.get(`/api/calls/${whose || ''}`);
                         this.items = data;
                     } catch (e) {
                         console.log(e);

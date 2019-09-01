@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export const HTTP = axios.create({
-    /*baseURL:'url домен',*/
     headers: {'Content-Type': 'application/json'}
 });
 

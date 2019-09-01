@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import {HTTP} from "@/util/HTTP";
+    import {HTTP} from "../util/HTTP";
 
     export default {
         name: "NewPassword",
